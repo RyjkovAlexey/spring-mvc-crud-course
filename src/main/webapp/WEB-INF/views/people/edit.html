@@ -5,19 +5,22 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Человек</title>
+    <title>Update Person</title>
 </head>
 <body>
-<p th:text="${person.getName()}">Value</p>
-<p th:text="${person.getId()}">Value2</p>
-
-<a th:href="@{/people/{id}/edit(id=${person.getId()})}">Edit</a>
 
 <form
-        th:method="DELETE"
+        th:method="PATCH"
         th:action="@{/people/{id}(id=${person.getId()})}"
+        th:object="${person}"
 >
-    <input type="submit" value="Delete">
+    <label for="name">Enter name: </label>
+    <input type="text" th:field="*{name}" id="name">
+
+    <br/>
+
+    <input type="submit" value="Update!"/>
 </form>
+
 </body>
 </html>
