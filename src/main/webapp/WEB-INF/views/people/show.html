@@ -9,9 +9,12 @@
 </head>
 <body>
 <p th:text="${person.getName()}">Value</p>
-<p th:text="${person.getId()}">Value2</p>
+<p th:text="${person.getEmail()}">Value</p>
+<p th:text="${person.getAge()}">Value</p>
+<p th:text="${person.getId()}">Value</p>
 
 <a th:href="@{/people/{id}/edit(id=${person.getId()})}">Edit</a>
+<a th:href="@{/people}">All users</a>
 
 <form
         th:method="DELETE"
