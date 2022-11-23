@@ -10,6 +10,7 @@ import ru.alexey.springmvccrud.models.Person;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class PersonDAO {
@@ -36,17 +37,26 @@ public class PersonDAO {
                 .orElse(null);
     }
 
+    public Optional<Person> show(String email) {
+        return jdbcTemplate.query(
+                        "SELECT * FROM person WHERE email=?",
+                        new BeanPropertyRowMapper<>(Person.class), new Object[]{email}
+                )
+                .stream()
+                .findAny();
+    }
+
     public void save(Person person) {
         jdbcTemplate.update(
-                "INSERT INTO person(name, age, email) VALUES (?, ?, ?)",
-                person.getName(), person.getAge(), person.getEmail()
+                "INSERT INTO person(name, age, email,address) VALUES (?, ?, ?, ?)",
+                person.getName(), person.getAge(), person.getEmail(), person.getAddress()
         );
     }
 
     public void update(int id, Person updatedPerson) {
         jdbcTemplate.update(
-                "UPDATE person SET name=?, age=?, email=? WHERE id=?",
-                updatedPerson.getName(), updatedPerson.getAge(), updatedPerson.getEmail(), id
+                "UPDATE person SET name=?, age=?, email=?, address=? WHERE id=?",
+                updatedPerson.getName(), updatedPerson.getAge(), updatedPerson.getEmail(), updatedPerson.getAddress(), id
         );
     }
 
@@ -75,7 +85,7 @@ public class PersonDAO {
         List<Person> people = new ArrayList<>();
 
         for (int i = 0; i < 1000; i++) {
-            people.add(new Person(i, "Name" + i, 30, "test" + i + "@mail.ru"));
+            people.add(new Person(i, "Name" + i, 30, "test" + i + "@mail.ru", "some address"));
         }
 
         return people;
