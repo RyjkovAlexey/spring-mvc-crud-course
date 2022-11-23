@@ -22,12 +22,12 @@ public class PersonDAO {
     }
 
     public List<Person> index() {
-        return jdbcTemplate.query("SELECT * FROM \"Person\"", new BeanPropertyRowMapper<>(Person.class));
+        return jdbcTemplate.query("SELECT * FROM person", new BeanPropertyRowMapper<>(Person.class));
     }
 
     public Person show(int id) {
         return jdbcTemplate.query(
-                        "SELECT * FROM \"Person\" WHERE id=?",
+                        "SELECT * FROM person WHERE id=?",
                         new BeanPropertyRowMapper<>(Person.class),
                         new Object[]{id}
                 )
@@ -38,20 +38,20 @@ public class PersonDAO {
 
     public void save(Person person) {
         jdbcTemplate.update(
-                "INSERT INTO \"Person\" VALUES (1, ?, ?, ?)",
+                "INSERT INTO person(name, age, email) VALUES (?, ?, ?)",
                 person.getName(), person.getAge(), person.getEmail()
         );
     }
 
     public void update(int id, Person updatedPerson) {
         jdbcTemplate.update(
-                "UPDATE \"Person\" SET name=?, age=?, email=? WHERE id=?",
+                "UPDATE person SET name=?, age=?, email=? WHERE id=?",
                 updatedPerson.getName(), updatedPerson.getAge(), updatedPerson.getEmail(), id
         );
     }
 
     public void delete(int id) {
-        jdbcTemplate.update("DELETE FROM \"Person\" WHERE id=?", id);
+        jdbcTemplate.update("DELETE FROM person WHERE id=?", id);
     }
 
     public void testMultipleUpdate() {
@@ -61,7 +61,7 @@ public class PersonDAO {
 
         people.forEach(person -> {
             jdbcTemplate.update(
-                    "INSERT INTO \"Person\" VALUES (?, ?, ?, ?)",
+                    "INSERT INTO person(name, age, email) VALUES (?, ?, ?)",
                     person.getId(), person.getName(), person.getAge(), person.getEmail()
             );
         });
@@ -86,15 +86,14 @@ public class PersonDAO {
 
         long before = System.currentTimeMillis();
 
-        jdbcTemplate.batchUpdate("INSERT INTO \"Person\" VALUES (?, ?, ?, ?)",
+        jdbcTemplate.batchUpdate("INSERT INTO person(name, age, email) VALUES (?, ?, ?)",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
                         Person person = people.get(i);
-                        ps.setInt(1, person.getId());
-                        ps.setString(2, person.getName());
-                        ps.setInt(3, person.getAge());
-                        ps.setString(4, person.getEmail());
+                        ps.setString(1, person.getName());
+                        ps.setInt(2, person.getAge());
+                        ps.setString(3, person.getEmail());
                     }
 
                     @Override
